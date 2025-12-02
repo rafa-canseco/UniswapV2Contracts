@@ -3,7 +3,7 @@ pragma solidity >= 0.4 < 0.9;
 
 import {IUniswapV2Pair} from
     "../../../src/interfaces/uniswap-v2/IUniswapV2Pair.sol";
-import {FixedPoint} from "../../../src/uniswap-v2/";
+import {FixedPoint} from "../../../src/uniswap-v2/FixedPoint.sol";
 
 // Modified from https://github.com/Uniswap/v2-periphery/blob/master/contracts/examples/ExampleOracleSimple.sol
 // Do not use this contract in production
@@ -95,7 +95,7 @@ contract UniswapV2Twap {
         //    updated in this contract
         uint32 dt = blockTimestamp - updatedAt;
         // 3. Require time elapsed >= MIN_WAIT
-        require(dt >= MIN_WAIT,"not enough time elapsed")
+        require(dt >= MIN_WAIT,"not enough time elapsed");
         // 4. Call the internal function _getCurrentCumulativePrices to get
         //    current cumulative prices
         (uint256 price0Cumulative, uint256 price1Cumulative) = _getCurrentCumulativePrices();
