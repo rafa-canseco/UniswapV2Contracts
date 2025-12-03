@@ -37,7 +37,7 @@ contract UniswapV2Arb1 {
         IERC20(params.tokenIn).approve(params.router0,params.amountIn);
         uint256[] memory amounts = IUniswapV2Router02(params.router0).swapExactTokensForTokens({
             amountIn: params.amountIn,
-            amountOutMin: 1,
+            amountOutMin: 0,
             path: path,
             to: address(this),
             deadline: block.timestamp
@@ -48,12 +48,12 @@ contract UniswapV2Arb1 {
         path2[1] = params.tokenIn;
         uint256[] memory amountsFinal = IUniswapV2Router02(params.router1).swapExactTokensForTokens({
             amountIn: amounts[1],
-            amountOutMin: 1,
+            amountOutMin: params.amountIn,
             path: path2,
             to:address(this),
             deadline: block.timestamp
         });
-        require(amountsFinal[1] - params.amountIn > params.minProfit,"not enough profit");
+        require(amountsFinal[1] - params.amountIn >= params.minProfit,"not enough profit");
         IERC20(params.tokenIn).transfer(msg.sender,amountsFinal[1]);
             
         
@@ -71,9 +71,11 @@ contract UniswapV2Arb1 {
      */
     function flashSwap(address pair, bool isToken0, SwapParams calldata params)
         external
-    {
-        (uint256 amount0Out, uint256 amount1Out) = isToken0 ? (params.amountIn,uint256(0)) : (uint256(0),params.amountIn);
-        address to = address(this);
+    {   
+        address token0 = IUniswapV2Pair(pair).token0();
+        bool shouldBorrowToken0 = (params.tokenIn == token0);
+        (uint256 amount0Out, uint256 amount1Out) = shouldBorrowToken0 ? (params.amountIn, uint256(0)) : (uint256(0), params.amountIn);
+        address to = msg.sender;
         bytes memory data = abi.encode(params, to);
         IUniswapV2Pair(pair).swap({
             amount0Out:amount0Out,

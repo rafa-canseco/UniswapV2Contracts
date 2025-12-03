@@ -12,7 +12,7 @@ import {
     UNISWAP_V2_ROUTER_02,
     SUSHISWAP_V2_ROUTER_02,
     UNISWAP_V2_PAIR_DAI_WETH,
-    UNISWAP_V2_PAIR_DAI_MKR
+    UNISWAP_V2_PAIR_DAI_UNI
 } from "../../../src/interfaces/Constants.sol";
 import {UniswapV2Arb1} from "./UniswapV2Arb1.sol";
 
@@ -81,14 +81,14 @@ contract UniswapV2Arb1Test is Test {
         uint256 bal0 = dai.balanceOf(user);
         vm.prank(user);
         arb.flashSwap(
-            UNISWAP_V2_PAIR_DAI_MKR,
+            UNISWAP_V2_PAIR_DAI_UNI,
             true,
             UniswapV2Arb1.SwapParams({
                 router0: UNISWAP_V2_ROUTER_02,
                 router1: SUSHISWAP_V2_ROUTER_02,
                 tokenIn: DAI,
                 tokenOut: WETH,
-                amountIn: 10000 * 1e18,
+                amountIn: 1000 * 1e18,
                 minProfit: 1
             })
         );
